@@ -1,0 +1,40 @@
+{
+  "name": "issuer-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@coreui/coreui": "^5.1.2",
+    "@coreui/react": "^5.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@headlessui/react": "^2.2.0",
+    "@sendgrid/mail": "^8.1.4",
+    "@supabase/supabase-js": "^1.18.1",
+    "axios": "^1.7.7",
+    "fs": "^0.0.1-security",
+    "next": "^15.0.1",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.5",
+    "react-dom": "^18.3.1",
+    "react-qrcode-logo": "^3.0.0",
+    "reactjs-popup": "^2.0.6",
+    "swr": "^2.2.5",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.1",
+    "@types/uuid": "^10.0.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "9.13.0",
+    "eslint-config-next": "15.0.1",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.7.2"
+  }
+}
