@@ -21,3 +21,13 @@
 }
 
 
+.modal-attributes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.modal-form {
+  max-height: 80vh;
+  overflow-y: auto;
+}

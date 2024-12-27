@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../client";
-import { v4 as uuidv4 } from "uuid"; 
+import { v4 as uuidv4 } from "uuid";
+
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Policy {
   policy_id: string;
   policy_name: string;
   policy_description: string;
-  version: string; 
+  version: string;
   jurisdiction: string;
   industrySector: string;
   created_at: string;
-  updated_at?: string; 
+  updated_at?: string;
 }
 
 const ConsentPolicy: React.FC = () => {
@@ -23,12 +33,13 @@ const ConsentPolicy: React.FC = () => {
     policy_id: "",
     policy_name: "",
     policy_description: "",
-    version: "1.0", 
+    version: "1.0",
     jurisdiction: "",
     industrySector: "",
     created_at: new Date().toISOString(),
   });
   const [editPolicy, setEditPolicy] = useState<Policy | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -55,6 +66,7 @@ const ConsentPolicy: React.FC = () => {
   const toggleDropdown = (): void => setDropdownOpen((prev) => !prev);
 
   const handleLogout = async (): Promise<void> => {
+    await supabase.auth.signOut();
     router.push("/");
   };
 
@@ -103,27 +115,28 @@ const ConsentPolicy: React.FC = () => {
   const handleUpdatePolicy = async (policyId: string): Promise<void> => {
     try {
       if (!editPolicy) return;
-  
+
       // Generate a new version
       const newVersion = `${parseFloat(editPolicy.version) + 0.1}`;
-  
+
       const updatedPolicy = {
-        policy_id: uuidv4(), 
+        policy_id: uuidv4(),
         policy_name: editPolicy.policy_name,
         policy_description: editPolicy.policy_description,
         jurisdiction: editPolicy.jurisdiction,
         industrySector: editPolicy.industrySector,
-        version: newVersion, 
+        version: newVersion,
         created_at: editPolicy.created_at,
-        updated_at: new Date().toISOString(), 
+        updated_at: new Date().toISOString(),
       };
-  
+
       const { data, error } = await supabase
         .from("Policy")
         .upsert(updatedPolicy, { onConflict: "policy_id" });
-  
+
       if (error) {
-        if (error.code === "23505") { // Handle duplicate policy_id case
+        if (error.code === "23505") {
+          // Handle duplicate policy_id case
           console.error("Error updating policy: Duplicate policy_id");
         } else {
           console.error("Error updating policy:", error.message);
@@ -134,7 +147,7 @@ const ConsentPolicy: React.FC = () => {
             p.policy_id === policyId ? updatedPolicy : p
           )
         );
-        setShowAddPolicyForm(false); 
+        setShowAddPolicyForm(false);
         setEditPolicy(null);
       }
     } catch (error) {
@@ -147,13 +160,11 @@ const ConsentPolicy: React.FC = () => {
       {/* Full-Width Navbar */}
       <header className="w-full flex items-center justify-between px-4 py-4 bg-gray-800 text-white">
         <div className="flex items-center">
-          {/* <img className="w-10 h-10 rounded-full mr-2" src="" alt="Logo" /> */}
           <span className="text-white font-bold text-lg">CONSENT POLICY</span>
         </div>
 
         <div className="relative">
           <div className="flex items-center space-x-3">
-            {/* <p className="hidden sm:block">user@example.com</p> */}
             <button
               className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-400"
               onClick={toggleDropdown}
@@ -183,30 +194,45 @@ const ConsentPolicy: React.FC = () => {
 
       <div className="flex flex-1">
         {/* Sidebar */}
-        <aside className="bg-gray-800 w-64 h-screen p-4 hidden md:block">
+        <aside
+          className={`bg-gray-800 w-64 h-screen p-4 md:block ${sidebarOpen ? 'block' : 'hidden'} md:flex transition-all duration-300`}
+        >
           <nav>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="block px-4 py-2 text-white hover:bg-gray-700 rounded">
+                <a href="/profile" className="block px-4 py-2 text-white hover:bg-gray-700 rounded">
                   Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="block px-4 py-2 text-white hover:bg-gray-700 rounded">
-                  Agreement
+                <a href="/agreement" className="block px-4 py-2 text-white hover:bg-gray-700 rounded">
+                  Agreements
                 </a>
               </li>
               <li>
-                <a href="#" className="block px-4 py-2 text-white hover:bg-gray-700 rounded">
-                  User
+                <a href="/users" className="block px-4 py-2 text-white hover:bg-gray-700 rounded">
+                  Users
+                </a>
+              </li>
+              <li>
+                <a href="/consent-records" className="block px-4 py-2 text-white hover:bg-gray-700 rounded">
+                  Consent Records
                 </a>
               </li>
             </ul>
           </nav>
         </aside>
 
+        {/* Mobile Sidebar Toggle */}
+        <button
+          className="md:hidden p-4 bg-gray-800 text-white"
+          onClick={() => setSidebarOpen((prev) => !prev)}
+        >
+          ☰
+        </button>
+
         {/* Main Content */}
-        <main className="flex-grow p-6 bg-gray-100">
+        <main className="flex-grow p-6 bg-gray-100 overflow-hidden">
           <h1 className="text-2xl font-bold mb-4">Policy List</h1>
           {loading ? (
             <p className="text-gray-500">Loading...</p>
@@ -214,19 +240,20 @@ const ConsentPolicy: React.FC = () => {
             <>
               <button
                 onClick={() => setShowAddPolicyForm(true)}
-                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
+                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg hover:bg-blue-400 transition"
               >
                 Add Policy
               </button>
 
               {showAddPolicyForm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                  <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                    <h3 className="text-xl font-bold mb-4">
+                  <div className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[98%] p-6">
+                    <h3 className="text-xl font-bold mb-4 text-center">
                       {editPolicy ? "Edit Policy" : "Add New Policy"}
                     </h3>
                     <form
                       onSubmit={editPolicy ? () => handleUpdatePolicy(editPolicy.policy_id) : handleAddPolicy}
+                      className="space-y-4"
                     >
                       <div className="mb-4">
                         <label className="block text-gray-700">Policy Name</label>
@@ -235,7 +262,7 @@ const ConsentPolicy: React.FC = () => {
                           name="policy_name"
                           value={editPolicy ? editPolicy.policy_name : newPolicy.policy_name}
                           onChange={handleInputChange}
-                          className="w-full p-2 border border-gray-300 rounded-lg"
+                          className="w-full p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                           required
                         />
                       </div>
@@ -245,7 +272,7 @@ const ConsentPolicy: React.FC = () => {
                           name="policy_description"
                           value={editPolicy ? editPolicy.policy_description : newPolicy.policy_description}
                           onChange={handleInputChange}
-                          className="w-full p-2 border border-gray-300 rounded-lg"
+                          className="w-full p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                           required
                         />
                       </div>
@@ -256,7 +283,7 @@ const ConsentPolicy: React.FC = () => {
                           name="version"
                           value={editPolicy ? editPolicy.version : newPolicy.version}
                           onChange={handleInputChange}
-                          className="w-full p-2 border border-gray-300 rounded-lg"
+                          className="w-full p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                           readOnly={!editPolicy}
                         />
                       </div>
@@ -267,7 +294,7 @@ const ConsentPolicy: React.FC = () => {
                           name="jurisdiction"
                           value={editPolicy ? editPolicy.jurisdiction : newPolicy.jurisdiction}
                           onChange={handleInputChange}
-                          className="w-full p-2 border border-gray-300 rounded-lg"
+                          className="w-full p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                           required
                         />
                       </div>
@@ -278,14 +305,14 @@ const ConsentPolicy: React.FC = () => {
                           name="industrySector"
                           value={editPolicy ? editPolicy.industrySector : newPolicy.industrySector}
                           onChange={handleInputChange}
-                          className="w-full p-2 border border-gray-300 rounded-lg"
+                          className="w-full p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                           required
                         />
                       </div>
                       <div className="flex justify-end">
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-green-500 text-white rounded-lg"
+                          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-400 transition"
                         >
                           {editPolicy ? "Update Policy" : "Add Policy"}
                         </button>
@@ -295,7 +322,7 @@ const ConsentPolicy: React.FC = () => {
                             setShowAddPolicyForm(false);
                             setEditPolicy(null); // Clear the edit state
                           }}
-                          className="ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+                          className="ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition"
                         >
                           Cancel
                         </button>
@@ -305,38 +332,41 @@ const ConsentPolicy: React.FC = () => {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {policies.map((policy) => (
-                  <div
-                    key={policy.policy_id}
-                    className="bg-white rounded-lg shadow-md p-4 border border-gray-200"
-                  >
-                    <h2 className="text-xl font-bold text-gray-800 mb-2">
-                      {policy.policy_name}
-                    </h2>
-                    <p className="text-gray-600 mb-1">
-                      <strong>Description:</strong> {policy.policy_description}
-                    </p>
-                    <p className="text-gray-600 mb-1">
-                      <strong>Version:</strong> {policy.version}
-                    </p>
-                    <p className="text-gray-600 mb-1">
-                      <strong>Jurisdiction:</strong> {policy.jurisdiction}
-                    </p>
-                    <p className="text-gray-600 mb-1">
-                      <strong>Sector:</strong> {policy.industrySector}
-                    </p>
-                    <p className="text-gray-400 text-sm mt-2">
-                      Created at: {new Date(policy.created_at).toLocaleDateString()}
-                    </p>
-                    <button
-                      className="mt-4 px-4 py-2 bg-yellow-400 text-white rounded-lg"
-                      onClick={() => handleEditPolicy(policy)}
-                    >
-                      Edit
-                    </button>
-                  </div>
-                ))}
+              <div className="overflow-x-auto">
+                <Table>
+                  {/* <TableCaption>Policy List</TableCaption> */}
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-center">Policy Name</TableHead>
+                      <TableHead className="text-center">Description</TableHead>
+                      <TableHead className="text-center">Version</TableHead>
+                      <TableHead className="text-center">Jurisdiction</TableHead>
+                      <TableHead className="text-center">Sector</TableHead>
+                      <TableHead className="text-center">Created At</TableHead>
+                      <TableHead className="text-center">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {policies.map((policy) => (
+                      <TableRow key={policy.policy_id}>
+                        <TableCell>{policy.policy_name}</TableCell>
+                        <TableCell>{policy.policy_description}</TableCell>
+                        <TableCell>{policy.version}</TableCell>
+                        <TableCell>{policy.jurisdiction}</TableCell>
+                        <TableCell>{policy.industrySector}</TableCell>
+                        <TableCell>{policy.created_at}</TableCell>
+                        <TableCell className="flex justify-center space-x-2">
+                          <button
+                            className="px-3 py-1 text-white bg-blue-500 rounded"
+                            onClick={() => handleEditPolicy(policy)}
+                          >
+                            Edit
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
             </>
           )}
