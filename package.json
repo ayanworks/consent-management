@@ -1,5 +1,5 @@
 {
-  "name": "issuer-app",
+  "name": "consent-management-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
-  },
+  },  
   "dependencies": {
     "@coreui/coreui": "^5.1.2",
     "@coreui/react": "^5.4.0",

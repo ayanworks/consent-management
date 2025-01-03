@@ -9,7 +9,7 @@ import {
   TableCaption,
   TableCell,
   TableHead,
-  TableHeader,
+  TableHeader,  
   TableRow,
 } from "@/components/ui/table";
 
@@ -252,7 +252,14 @@ const ConsentPolicy: React.FC = () => {
                       {editPolicy ? "Edit Policy" : "Add New Policy"}
                     </h3>
                     <form
-                      onSubmit={editPolicy ? () => handleUpdatePolicy(editPolicy.policy_id) : handleAddPolicy}
+                      onSubmit={(e) => {
+                        e.preventDefault(); // Prevent form from submitting and changing the URL
+                        if (editPolicy) {
+                          handleUpdatePolicy(editPolicy.policy_id);
+                        } else {
+                          handleAddPolicy();
+                        }
+                      }}
                       className="space-y-4"
                     >
                       <div className="mb-4">

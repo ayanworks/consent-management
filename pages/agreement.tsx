@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../client";
 import { v4 as uuidv4 } from "uuid";
-import { UUID } from "crypto";
 
 interface DataAttribute {
   id: number;
