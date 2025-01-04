@@ -11,6 +11,23 @@ export type Policy = {
   updated_at?: string;
 }
 
+export type DataAttribute = {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export type Agreement = {
+  agreement_id: string;
+  agreement_name: string;
+  policy_id: string;
+  purpose: string;
+  purpose_description: string;
+  is_active: boolean;
+  data_attributes: DataAttribute[];
+  version: string;
+}
+
 export type User = {
   id: number;
   name: string;
@@ -154,6 +171,14 @@ export const navItems: NavItem[] = [
     url: '/dashboard/policies',
     icon: 'user',
     shortcut: ['p', 'p'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Agreements',
+    url: '/dashboard/agreement',
+    icon: 'user',
+    shortcut: ['a', 'a'],
     isActive: false,
     items: [] // No child items
   },

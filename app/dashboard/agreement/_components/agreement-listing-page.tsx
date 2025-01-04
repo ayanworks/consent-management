@@ -15,7 +15,7 @@ import { supabase } from '@/lib/client';
 
 type TPoliciesListingPage = {};
 
-export default async function PoliciesListingPage({}: TPoliciesListingPage) {
+export default async function AgreementListingPage({}: TPoliciesListingPage) {
   
   // Get query parameters from searchParamsCache
   const page = searchParamsCache.get('page');
@@ -34,12 +34,12 @@ export default async function PoliciesListingPage({}: TPoliciesListingPage) {
     search?: string
   ) => {
     try {
-      let query = supabase.from('Policy').select('*', { count: 'exact' });
+      let query = supabase.from('Agreement').select('*', { count: 'exact' });
       const offset = (page - 1) * pageLimit;
       query = query.range(offset, offset + pageLimit - 1);
   
       if (search) {
-        query = query.ilike('policy_name', `%${search}%`);
+        query = query.ilike('agreement_name', `%${search}%`);
       }
       const { data, count, error } = await query;
       if (error) {
@@ -62,12 +62,12 @@ export default async function PoliciesListingPage({}: TPoliciesListingPage) {
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title={`Policies (${totalCount})`}
-            description="Manage policies (Client-side fetching with React hooks.)"
+            title={`Agreements (${totalCount})`}
+            description="Manage agreements (Client-side fetching with React hooks.)"
           />
 
           <Link
-            href={'/dashboard/policies/new'}
+            href={'/dashboard/agreement/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New
