@@ -81,8 +81,8 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
       const agreementData = {
         agreement_id: initialData?.agreement_id || uuidv4(),
         ...values,
-        is_active: initialData ? initialData.is_active : true, // Default to true if creating
-        version: initialData ? (parseFloat(initialData.version) + 0.1).toFixed(1) : '1.0', // Increment version on update, '1.0' for new agreements
+        is_active: initialData ? initialData.is_active : true, 
+        version: initialData ? (parseFloat(initialData.version) + 0.1).toFixed(1) : '1.0', 
         created_at: initialData?.created_at || new Date().toISOString(),
         updated_at: initialData ? new Date().toISOString() : null,
       };

@@ -10,7 +10,7 @@ import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import PolicyTable from './policy-tables';
+import PolicyTable from './agreement-tables';
 import { supabase } from '@/lib/client';
 
 type TPoliciesListingPage = {};
