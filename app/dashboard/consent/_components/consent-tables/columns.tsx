@@ -15,8 +15,9 @@ export const columns: ColumnDef<Policy>[] = [
     cell: ({ row }) => row.original.User?.name || 'Unknown'
   },
   {
-    accessorKey: 'agreement_id',
-    header: 'AGREEMENT ID'
+    accessorKey: 'agreement_name',
+    header: 'AGREEMENT NAME',
+    cell: ({row}) => row.original.Agreement?.agreement_name || 'Unknown'
   },
   {
     accessorKey: 'consent_status',
@@ -25,7 +26,7 @@ export const columns: ColumnDef<Policy>[] = [
   {
     accessorKey: 'created_at',
     header: 'CREATED AT',
-    cell: ({ row }) => new Date(row.original.created_at).toLocaleString() 
+    // cell: ({ row }) => new Date(row.original.created_at).toLocaleString() 
   },
   {
     id: 'actions',

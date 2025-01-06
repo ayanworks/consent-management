@@ -10,12 +10,12 @@ import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import PolicyTable from './consent-tables';
+import PolicyTable from './user-tables';
 import { supabase } from '@/lib/client';
 
 type TPoliciesListingPage = {};
 
-export default async function ConsentListingPage({}: TPoliciesListingPage) {
+export default async function UsersListingPage({}: TPoliciesListingPage) {
   
   // Get query parameters from searchParamsCache
   const page = searchParamsCache.get('page');
@@ -55,25 +55,25 @@ export default async function ConsentListingPage({}: TPoliciesListingPage) {
 
 
 
-  const fetchPolicies = async (
+  const fetchUser = async (
     page: number,
     pageLimit: number,
     search?: string
   ) => {
     try {
       let query = supabase
-        .from('Consent_Record')
-        .select('*, User(name), Agreement(agreement_name)', { count: 'exact' }); 
+        .from('User')
+        .select('*', { count: 'exact' }); 
   
       const offset = (page - 1) * pageLimit;
       query = query.range(offset, offset + pageLimit - 1);
   
       if (search) {
-        query = query.ilike('consent_id', `%${search}%`);
+        query = query.ilike('name', `%${search}%`);
       }
   
       const { data, count, error } = await query;
-      console.log("🚀 ~ ConsentListingPage ~ data:", data)
+      console.log("🚀 ~ UserListingPage ~ data:", data)
   
       if (error) {
         console.error('Error fetching data:', error.message);
@@ -90,7 +90,7 @@ export default async function ConsentListingPage({}: TPoliciesListingPage) {
 
   
   // Example usage of the fetchPolicies function
-  const { data, totalCount } = await fetchPolicies(filters.page, filters.limit, filters.search);
+  const { data, totalCount } = await fetchUser(filters.page, filters.limit, filters.search);
   
   
   return (
@@ -98,8 +98,8 @@ export default async function ConsentListingPage({}: TPoliciesListingPage) {
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title={`Consent Records (${totalCount})`}
-            description="Manage consents"
+            title={`Users (${totalCount})`}
+            description="Manage users"
           />
 
           {/* <Link

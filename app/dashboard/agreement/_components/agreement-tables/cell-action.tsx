@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Agreement } from '@/constants/data'; // Assuming you have the `Agreement` type defined in your constants
-import { Edit, MoreHorizontal } from 'lucide-react';
+import { Edit, MoreHorizontal, View } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface CellActionProps {
@@ -29,6 +29,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem
+          onClick={() => router.push(`/dashboard/agreement/view?agreement_id=${data.agreement_id}`)} // Update route for agreements
+        >
+          <View className="mr-2 h-4 w-4" /> View
+        </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => router.push(`/dashboard/agreement/update?agreement_id=${data.agreement_id}`)} // Update route for agreements
         >

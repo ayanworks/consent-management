@@ -63,7 +63,7 @@ export default async function AgreementListingPage({}: TPoliciesListingPage) {
         <div className="flex items-start justify-between">
           <Heading
             title={`Agreements (${totalCount})`}
-            description="Manage agreements (Client-side fetching with React hooks.)"
+            description="Manage agreements"
           />
 
           <Link

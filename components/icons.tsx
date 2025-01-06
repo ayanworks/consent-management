@@ -30,8 +30,14 @@ import {
   UserCircle2Icon,
   UserPen,
   UserX2Icon,
-  X
+  X, 
+  Handshake,
+  ScrollText,
+  FileCheck2,
+  ClipboardCheck,
+  UsersRound
 } from 'lucide-react';
+import { string } from 'zod';
 
 export type Icon = LucideIcon;
 
@@ -65,5 +71,10 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   twitter: Twitter,
-  check: Check
+  check: Check,
+  handshake: Handshake,
+  scrolltext: ScrollText,
+  filecheck: FileCheck2,
+  clipboard: ClipboardCheck,
+  users: UsersRound
 };

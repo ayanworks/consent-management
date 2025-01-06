@@ -1,6 +1,7 @@
 import { NavItem } from '@/types';
 
 export type Policy = {
+  purpose_description: any;
   policy_id: string;
   policy_name: string;
   policy_description: string;
@@ -156,20 +157,20 @@ export const navItems: NavItem[] = [
     icon: 'dashboard',
     isActive: false,
     shortcut: ['d', 'd'],
-    items: [] // Empty array as there are no child items for Dashboard
+    items: [] 
   },
-  {
-    title: 'Employee',
-    url: '/dashboard/employee',
-    icon: 'user',
-    shortcut: ['e', 'e'],
-    isActive: false,
-    items: [] // No child items
-  },
+  // {
+  //   title: 'Employee',
+  //   url: '/dashboard/employee',
+  //   icon: 'user',
+  //   shortcut: ['e', 'e'],
+  //   isActive: false,
+  //   items: [] // No child items
+  // },
   {
     title: 'Policies',
     url: '/dashboard/policies',
-    icon: 'user',
+    icon: 'scrolltext',
     shortcut: ['p', 'p'],
     isActive: false,
     items: [] // No child items
@@ -177,7 +178,15 @@ export const navItems: NavItem[] = [
   {
     title: 'Agreements',
     url: '/dashboard/agreement',
-    icon: 'user',
+    icon: 'handshake',
+    shortcut: ['a', 'a'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Users',
+    url: '/dashboard/users',
+    icon: 'users',
     shortcut: ['a', 'a'],
     isActive: false,
     items: [] // No child items
@@ -185,7 +194,15 @@ export const navItems: NavItem[] = [
   {
     title: 'Consent',
     url: '/dashboard/consent',
-    icon: 'user',
+    icon: 'filecheck',
+    shortcut: ['a', 'a'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Audit',
+    url: '/dashboard/audit',
+    icon: 'clipboard',
     shortcut: ['a', 'a'],
     isActive: false,
     items: [] // No child items

@@ -14,7 +14,13 @@ export const columns: ColumnDef<Policy>[] = [
   },
   {
     accessorKey: 'purpose_description',
-    header: 'DESCRIPTION'
+    header: 'DESCRIPTION',
+    cell: ({ row }) => {
+      const description = row.original.purpose_description;
+      const words = description.split(' ');
+      const displayText = words.slice(0, 6).join(' ') + (words.length > 6 ? '...' : '');
+      return <span>{displayText}</span>;
+    }
   },
   {
     accessorKey: 'is_active',
@@ -26,7 +32,8 @@ export const columns: ColumnDef<Policy>[] = [
   },
   {
     accessorKey: 'created_at',
-    header: 'CREATED AT'
+    header: 'CREATED AT',
+    // cell: ({ row }) => new Date(row.original.created_at).toLocaleString() 
   },
   {
     id: 'actions',

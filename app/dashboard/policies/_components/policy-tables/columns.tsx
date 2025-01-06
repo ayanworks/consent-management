@@ -26,7 +26,8 @@ export const columns: ColumnDef<Policy>[] = [
   },
   {
     accessorKey: 'created_at',
-    header: 'CREATED AT'
+    header: 'CREATED AT',
+    // cell: ({ row }) => new Date(row.original.created_at).toLocaleString() 
   },
   {
     id: 'actions',
