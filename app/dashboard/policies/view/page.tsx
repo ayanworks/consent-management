@@ -99,7 +99,7 @@ const PolicyView: React.FC = () => {
                   {policy.policy_name}
                 </p>
               </div>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-start gap-28">
                 <p className="text-gray-700 dark:text-gray-400 font-semibold">
                   Policy Description:
                 </p>

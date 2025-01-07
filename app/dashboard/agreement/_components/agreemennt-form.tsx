@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   agreement_name: z.string().min(1, { message: 'Agreement name is required.' }),
@@ -44,6 +45,7 @@ interface AgreementFormProps {
 export default function AgreementForm({ initialData, onClose }: AgreementFormProps) {
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [loadingPolicies, setLoadingPolicies] = useState(true);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -117,84 +119,89 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="agreement_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Agreement Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter agreement name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="policy_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Policy</FormLabel>
-                    <FormControl>
-                      <select
-                        {...field}
-                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        <option value="" className="text-gray-500">
-                          Select Policy
-                        </option>
-                        {loadingPolicies ? (
-                          <option disabled className="text-gray-500">
-                            Loading policies...
+              {/* Create a two-column grid for Agreement Name, Policy, Purpose, and Purpose Description */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="agreement_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Agreement Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter agreement name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="policy_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Policy</FormLabel>
+                      <FormControl>
+                        <select
+                          {...field}
+                          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <option value="" className="text-gray-500">
+                            Select Policy
                           </option>
-                        ) : (
-                          policies.map((policy) => (
-                            <option
-                              key={policy.policy_id}
-                              value={policy.policy_id}
-                              className="text-gray-900 hover:bg-blue-100"
-                            >
-                              {policy.policy_name}
+                          {loadingPolicies ? (
+                            <option disabled className="text-gray-500">
+                              Loading policies...
                             </option>
-                          ))
-                        )}
-                      </select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="purpose"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Purpose</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter purpose" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="purpose_description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Purpose Description</FormLabel>
-                    <FormControl>
-                      <textarea
-                        placeholder="Enter purpose description"
-                        className="w-full rounded-md border border-input bg-transparent p-3 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                          ) : (
+                            policies.map((policy) => (
+                              <option
+                                key={policy.policy_id}
+                                value={policy.policy_id}
+                                className="text-gray-900 hover:bg-blue-100"
+                              >
+                                {policy.policy_name}
+                              </option>
+                            ))
+                          )}
+                        </select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="purpose"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Purpose</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter purpose" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="purpose_description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Purpose Description</FormLabel>
+                      <FormControl>
+                        <textarea
+                          placeholder="Enter purpose description"
+                          className="w-full rounded-md border border-input bg-transparent p-3 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Data Attributes (kept as is) */}
               <FormItem>
                 <FormLabel>Data Attributes</FormLabel>
                 <div className="space-y-4">
@@ -224,6 +231,7 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
                   Add Data Attribute
                 </Button>
               </FormItem>
+
               <div className="flex justify-end">
                 <Button type="submit">
                   {initialData ? 'Update Agreement' : 'Add Agreement'}
@@ -231,7 +239,7 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={onClose}
+                  onClick={() => router.push('/dashboard/agreement')}
                   className="ml-2"
                 >
                   Cancel

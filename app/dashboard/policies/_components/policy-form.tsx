@@ -16,6 +16,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
+import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
   policy_name: z.string().min(1, { message: 'Policy name is required.' }),
@@ -42,6 +44,7 @@ interface PolicyFormProps {
 }
 
 export default function PolicyForm({ initialData, onClose }: PolicyFormProps) {
+  const router = useRouter();
   const isEditMode = !!initialData;
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -97,61 +100,74 @@ export default function PolicyForm({ initialData, onClose }: PolicyFormProps) {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="policy_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Policy Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter policy name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="policy_description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter description" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="jurisdiction"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Jurisdiction</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter jurisdiction" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="industrySector"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Industry Sector</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter industry sector" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit">
-                {isEditMode ? 'Update Policy' : 'Add Policy'}
-              </Button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="policy_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Policy Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter policy name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="policy_description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Enter description" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="jurisdiction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Jurisdiction</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter jurisdiction" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="industrySector"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Industry Sector</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter industry sector" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex justify-end mt-6">
+                <Button type="submit">
+                  {isEditMode ? 'Update Policy' : 'Add Policy'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => router.push('/dashboard/policies')}
+                  className="ml-2"
+                >
+                  Cancel
+                </Button>
+              </div>
             </form>
           </Form>
         </CardContent>

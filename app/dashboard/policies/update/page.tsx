@@ -7,6 +7,7 @@ import { supabase } from '@/lib/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function UpdatePolicy() {
   const [formData, setFormData] = useState({
@@ -73,58 +74,71 @@ export default function UpdatePolicy() {
 
   return (
     <div className='min-h-screen'>
-    <Card className="max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-left text-2xl font-bold">Edit Policy</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleUpdatePolicy();
-          }}
-          className="space-y-6"
-        >
-          <div>
-            <label className="block text-sm font-medium">Policy Name</label>
-            <Input
-              name="policy_name"
-              value={formData.policy_name}
-              onChange={handleInputChange}
-              placeholder="Enter policy name"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Description</label>
-            <Input
-              name="policy_description"
-              value={formData.policy_description}
-              onChange={handleInputChange}
-              placeholder="Enter description"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Jurisdiction</label>
-            <Input
-              name="jurisdiction"
-              value={formData.jurisdiction}
-              onChange={handleInputChange}
-              placeholder="Enter jurisdiction"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Industry Sector</label>
-            <Input
-              name="industrySector"
-              value={formData.industrySector}
-              onChange={handleInputChange}
-              placeholder="Enter industry sector"
-            />
-          </div>
-          <Button type="submit">Update Policy</Button>
-        </form>
-      </CardContent>
-    </Card>
+      <Card className="max-w-4xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-left text-2xl font-bold">Edit Policy</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleUpdatePolicy();
+            }}
+            className="space-y-6"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium">Policy Name</label>
+                <Input
+                  name="policy_name"
+                  value={formData.policy_name}
+                  onChange={handleInputChange}
+                  placeholder="Enter policy name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Description</label>
+                <Textarea
+                  name="policy_description"
+                  value={formData.policy_description}
+                  onChange={handleInputChange}
+                  placeholder="Enter description"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Jurisdiction</label>
+                <Input
+                  name="jurisdiction"
+                  value={formData.jurisdiction}
+                  onChange={handleInputChange}
+                  placeholder="Enter jurisdiction"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Industry Sector</label>
+                <Input
+                  name="industrySector"
+                  value={formData.industrySector}
+                  onChange={handleInputChange}
+                  placeholder="Enter industry sector"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-6">
+              <Button type="submit">Update Policy</Button>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => router.push('/dashboard/policies')}
+                className="ml-2"
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

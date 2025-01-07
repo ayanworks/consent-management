@@ -125,29 +125,29 @@ const AgreementView: React.FC = () => {
                   </p>
                 </div>
                 <div className="flex justify-between items-start">
-  <p className="text-gray-700 dark:text-gray-400 font-semibold">
-    Attributes:
-  </p>
-  <div className="text-gray-900 dark:text-gray-200 text-left w-full overflow-x-auto mr-auto flex justify-end items-end">
-    {Array.isArray(agreement.data_attributes) ? (
-      <table className="min-w-[50px] table-auto">
-        <tbody>
-          {agreement.data_attributes.map((attribute, index) => (
-            <tr key={index}>
-              {Object.entries(attribute).map(([key, value]) => (
-                <td key={key} className="px-4 py-2 border-b">
-                  <span className="font-semibold">{key}:</span> {String(value)}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    ) : (
-      <p>Invalid data</p>
-    )}
-  </div>
-</div>
+                  <p className="text-gray-700 dark:text-gray-400 font-semibold">
+                    Attributes:
+                  </p>
+                  <div className="text-gray-900 dark:text-gray-200 text-left w-full overflow-x-auto mr-auto flex justify-end items-end">
+                    {Array.isArray(agreement.data_attributes) ? (
+                      <table className="min-w-[50px] table-auto">
+                        <tbody>
+                          {agreement.data_attributes.map((attribute, index) => (
+                            <tr key={index}>
+                              {Object.entries(attribute).map(([key, value]) => (
+                                <td key={key} className="px-4 py-2 border-b">
+                                  <span className="font-semibold">{key}:</span> {String(value)}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <p>Invalid data</p>
+                    )}
+                  </div>
+                </div>
                 <div className="flex justify-between items-center">
                   <p className="text-gray-700 dark:text-gray-400 font-semibold">
                     Version:

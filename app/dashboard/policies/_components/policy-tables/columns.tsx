@@ -8,10 +8,16 @@ export const columns: ColumnDef<Policy>[] = [
     accessorKey: 'policy_name',
     header: 'POLICY NAME	'
   },
-  {
-    accessorKey: 'policy_description',
-    header: 'DESCRIPTION'
-  },
+  // {
+  //   accessorKey: 'policy_description',
+  //   header: 'DESCRIPTION',
+  //   cell: ({ row }) => {
+  //     const description = row.original.policy_description;
+  //     const words = description.split(' ');
+  //     const displayText = words.slice(0, 6).join(' ') + (words.length > 6 ? '...' : '');
+  //     return <span>{displayText}</span>;
+  //   },
+  // },
   {
     accessorKey: 'version',
     header: 'VERSION'
