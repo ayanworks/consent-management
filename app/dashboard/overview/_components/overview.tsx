@@ -168,7 +168,8 @@ export default function OverViewPage() {
                   >
                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                   </svg> */}
-                  <img width="30" height="30" src="https://img.icons8.com/ios/50/agreement.png" alt="agreement"/>
+                  {/* <img width="30" height="30" src="https://img.icons8.com/ios/50/agreement.png" alt="agreement"/> */}
+                  <img width="35" height="35" src="https://img.icons8.com/external-outline-wichaiwi/64/1A1A1A/external-consent-general-data-protection-regulation-gdpr-outline-wichaiwi.png" alt="agreement"/>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{totalAgreements}</div>
@@ -216,7 +217,8 @@ export default function OverViewPage() {
                   >
                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                   </svg> */}
-                  <img width="35" height="35" src="https://img.icons8.com/external-outline-wichaiwi/64/1A1A1A/external-consent-general-data-protection-regulation-gdpr-outline-wichaiwi.png" alt="external-consent-general-data-protection-regulation-gdpr-outline-wichaiwi"/>
+                  <img width="30" height="30" src="https://img.icons8.com/ios/50/agreement.png" alt="consent"/>
+                  {/* <img width="35" height="35" src="https://img.icons8.com/external-outline-wichaiwi/64/1A1A1A/external-consent-general-data-protection-regulation-gdpr-outline-wichaiwi.png" alt="external-consent-general-data-protection-regulation-gdpr-outline-wichaiwi"/> */}
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{totalConsents}</div>

@@ -14,6 +14,7 @@ import {
 import { signOut, useSession } from 'next-auth/react';
 export function UserNav() {
   const { data: session } = useSession();
+  console.log("🚀 ~ UserNav ~ session:", session)
   if (session) {
     return (
       <DropdownMenu>
@@ -22,10 +23,10 @@ export function UserNav() {
           <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage
                       src={session?.user?.image || ''}
-                      alt={session?.user?.name || ''}
+                      alt={session?.user?.email || ''}
                     />
                     <AvatarFallback className="rounded-lg">
-                      {session?.user?.name?.slice(0, 2)?.toUpperCase() || 'CN'}
+                      {session?.user?.email?.slice(0, 2)?.toUpperCase() || 'CN'}
                     </AvatarFallback>
                   </Avatar>
           </Button>
