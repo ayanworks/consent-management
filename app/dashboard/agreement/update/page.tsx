@@ -160,6 +160,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner'; 
 
 export default function UpdateAgreement() {
   const [formData, setFormData] = useState({
@@ -198,7 +199,10 @@ export default function UpdateAgreement() {
       });
     }
 
-    if (error) console.error('Error fetching agreement:', error);
+    if (error) {
+      console.error('Error fetching agreement:', error);
+      toast.error('Failed to load agreement data.');
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -246,129 +250,129 @@ export default function UpdateAgreement() {
       const { data, error } = await supabase
         .from('Agreement')
         .upsert(updatedAgreement, { onConflict: 'agreement_id' });
+      console.log("🚀 ~ handleUpdateAgreement ~ data:", data)
 
       if (error) {
         console.error('Error updating agreement:', error.message);
+        toast.error('Failed to update agreement.');
       } else {
+        toast.success('Agreement updated successfully!');
         router.push('/dashboard/agreement');
       }
     } catch (error) {
       console.error('Unexpected error:', error);
+      toast.error('Unexpected error occurred while updating agreement.');
     }
   };
 
   return (
-    <div className="min-h-screen">
-      <Card className="max-w-4xl mx-auto h-[86vh] overflow-y-auto">
+    <div className="min-h-screen p-6">
+      <Card className="mx-auto h-[70vh] overflow-y-auto">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">Edit Agreement</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[80vh]">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleUpdateAgreement();
-              }}
-              className="space-y-6"
-            >
-              {/* Two-column grid for Agreement Name, Policy ID, Purpose, and Purpose Description */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium">Agreement Name</label>
-                  <Input
-                    name="agreement_name"
-                    value={formData.agreement_name}
-                    onChange={handleInputChange}
-                    placeholder="Enter agreement name"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium">Policy ID</label>
-                  <Input
-                    name="policy_id"
-                    value={formData.policy_id}
-                    onChange={handleInputChange}
-                    placeholder="Enter associated policy ID"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium">Purpose</label>
-                  <Input
-                    name="purpose"
-                    value={formData.purpose}
-                    onChange={handleInputChange}
-                    placeholder="Enter purpose"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium">Purpose Description</label>
-                  <Textarea
-                    name="purpose_description"
-                    value={formData.purpose_description}
-                    onChange={handleInputChange}
-                    placeholder="Enter purpose description"
-                  />
-                </div>
-              </div>
-
-              {/* Active Checkbox */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleUpdateAgreement();
+            }}
+            className="space-y-6"
+          >
+            {/* Agreement Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium">Active</label>
-                <input
-                  type="checkbox"
-                  name="is_active"
-                  checked={formData.is_active}
+                <label className="block text-sm font-medium">Agreement Name</label>
+                <Input
+                  name="agreement_name"
+                  value={formData.agreement_name}
                   onChange={handleInputChange}
-                  className="h-4 w-4"
+                  placeholder="Enter agreement name"
                 />
               </div>
-
-              {/* Data Attributes Section */}
               <div>
-                <label className="block text-sm font-medium">Data Attributes</label>
-                {formData.data_attributes.map((attr, index) => (
-                  <div key={index} className="flex space-x-2 mt-2">
-                    <Input
-                      placeholder="Attribute Name"
-                      value={attr.name}
-                      onChange={(e) => handleDataAttributeChange(index, 'name', e.target.value)}
-                    />
-                    <Input
-                      placeholder="Attribute Description"
-                      value={attr.description}
-                      onChange={(e) => handleDataAttributeChange(index, 'description', e.target.value)}
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      onClick={() => removeDataAttribute(index)}
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                ))}
-                <Button type="button" onClick={addDataAttribute} className="mt-2">
-                  Add Data Attribute
-                </Button>
+                <label className="block text-sm font-medium">Policy ID</label>
+                <Input
+                  name="policy_id"
+                  value={formData.policy_id}
+                  onChange={handleInputChange}
+                  placeholder="Enter associated policy ID"
+                />
               </div>
+              <div>
+                <label className="block text-sm font-medium">Purpose</label>
+                <Input
+                  name="purpose"
+                  value={formData.purpose}
+                  onChange={handleInputChange}
+                  placeholder="Enter purpose"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Purpose Description</label>
+                <Textarea
+                  name="purpose_description"
+                  value={formData.purpose_description}
+                  onChange={handleInputChange}
+                  placeholder="Enter purpose description"
+                />
+              </div>
+            </div>
 
-              {/* Submit Button */}
-              <div className="flex justify-end">
-                <Button type="submit">
-                  Update Agreement
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => router.push('/dashboard/agreement')}
-                  className="ml-2"
-                >
+            {/* Active Checkbox */}
+            <div>
+              <label className="block text-sm font-medium">Active</label>
+              <input
+                type="checkbox"
+                name="is_active"
+                checked={formData.is_active}
+                onChange={handleInputChange}
+                className="h-4 w-4"
+              />
+            </div>
+
+            {/* Data Attributes Section */}
+            <div>
+              <label className="block text-sm font-medium">Data Attributes</label>
+              {formData.data_attributes.map((attr, index) => (
+                <div key={index} className="flex space-x-2 mt-2">
+                  <Input
+                    placeholder="Attribute Name"
+                    value={attr.name}
+                    onChange={(e) => handleDataAttributeChange(index, 'name', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Attribute Description"
+                    value={attr.description}
+                    onChange={(e) => handleDataAttributeChange(index, 'description', e.target.value)}
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => removeDataAttribute(index)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+              <Button type="button" onClick={addDataAttribute} className="mt-2">
+                Add Data Attribute
+              </Button>
+            </div>
+
+            {/* Submit & Cancel Buttons */}
+            <div className="flex justify-end">
+              <Button type="submit">Update Agreement</Button>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => router.push('/dashboard/agreement')}
+                className="ml-2"
+              >
                 Cancel
-                </Button>
-              </div>
-            </form>
-          </div>
+              </Button>
+            </div>
+          </form>
         </CardContent>
       </Card>
     </div>

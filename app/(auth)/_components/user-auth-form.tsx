@@ -49,7 +49,7 @@ export default function UserAuthForm() {
         password: data.password,
         callbackUrl: callbackUrl ?? '/dashboard'
       });
-      // toast.success('Signed In Successfully!');
+      toast.success('Signed In Successfully!');
     });
   };
 

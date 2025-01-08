@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner'; 
 
 export default function UpdatePolicy() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ export default function UpdatePolicy() {
     jurisdiction: '',
     industrySector: '',
   });
+  
   const searchParams = useSearchParams();
   const policy_id = searchParams.get('policy_id');
   const router = useRouter();
@@ -43,16 +45,17 @@ export default function UpdatePolicy() {
     if (error) console.error('Error fetching policy:', error);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleUpdatePolicy = async () => {
     try {
+      // Increment version by 0.1 for each update
       const newVersion = `${parseFloat('1.0') + 0.1}`;
 
       const updatedPolicy = {
-        policy_id: uuidv4(),
+        policy_id: uuidv4(), 
         ...formData,
         version: newVersion,
         updated_at: new Date().toISOString(),
@@ -64,17 +67,20 @@ export default function UpdatePolicy() {
 
       if (error) {
         console.error('Error updating policy:', error.message);
+        toast.error('Failed to update the policy. Please try again.');
       } else {
-        router.push('/dashboard/policies');
+        toast.success('Policy updated successfully!');
+        router.push('/dashboard/policies');  
       }
     } catch (error) {
       console.error('Unexpected error:', error);
+      toast.error('Unexpected error occurred while updating the policy.');
     }
   };
 
   return (
-    <div className='min-h-screen'>
-      <Card className="max-w-4xl mx-auto">
+    <div className="min-h-screen p-6">
+      <Card className="mx-auto">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">Edit Policy</CardTitle>
         </CardHeader>

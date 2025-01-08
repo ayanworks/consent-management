@@ -187,7 +187,7 @@ export const navItems: NavItem[] = [
     title: 'Users',
     url: '/dashboard/users',
     icon: 'users',
-    shortcut: ['a', 'a'],
+    shortcut: ['u', 'u'],
     isActive: false,
     items: [] // No child items
   },
@@ -195,7 +195,7 @@ export const navItems: NavItem[] = [
     title: 'Consent',
     url: '/dashboard/consent',
     icon: 'filecheck',
-    shortcut: ['a', 'a'],
+    shortcut: ['c', 'c'],
     isActive: false,
     items: [] // No child items
   },
@@ -203,7 +203,7 @@ export const navItems: NavItem[] = [
     title: 'Audit',
     url: '/dashboard/audit',
     icon: 'clipboard',
-    shortcut: ['a', 'a'],
+    shortcut: ['a', 'u'],
     isActive: false,
     items: [] // No child items
   },

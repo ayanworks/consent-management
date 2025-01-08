@@ -31,12 +31,27 @@ export function DataTableSearch({
     setPage(1); // Reset page to 1 when search changes
   };
 
+  const handleClear = () => {
+    setSearchQuery('', { startTransition });
+    setPage(1); // Reset page to 1 when search is cleared
+  };
+
   return (
-    <Input
-      placeholder={`Search ${searchKey}...`}
-      value={searchQuery ?? ''}
-      onChange={(e) => handleSearch(e.target.value)}
-      className={cn('w-full md:max-w-sm', isLoading && 'animate-pulse')}
-    />
+    <div className="flex items-center space-x-2">
+      <Input
+        placeholder={`Search ${searchKey}...`}
+        value={searchQuery ?? ''}
+        onChange={(e) => handleSearch(e.target.value)}
+        className={cn('w-[300px]', isLoading && 'animate-pulse')}
+      />
+      {searchQuery && (
+        <button
+          onClick={handleClear}
+          className="text-md text-gray-600 hover:text-gray-700"
+        >
+          Clear
+        </button>
+      )}
+    </div>
   );
 }

@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner'; 
 
 const formSchema = z.object({
   policy_name: z.string().min(1, { message: 'Policy name is required.' }),
@@ -39,8 +40,8 @@ interface Policy {
 }
 
 interface PolicyFormProps {
-  initialData?: Policy; // Optional prop for edit mode
-  onClose?: () => void; // Callback to close the form
+  initialData?: Policy; 
+  onClose?: () => void;
 }
 
 export default function PolicyForm({ initialData, onClose }: PolicyFormProps) {
@@ -76,12 +77,16 @@ export default function PolicyForm({ initialData, onClose }: PolicyFormProps) {
 
       if (error) {
         console.error('Error saving policy:', error.message);
+        toast.error('Failed to save the policy. Please try again.');
       } else {
+        toast.success(isEditMode ? 'Policy updated successfully!' : 'Policy added successfully!');
         form.reset();
-        onClose?.(); // Close the form after submission
+        onClose?.();
+        router.push('/dashboard/policies');
       }
     } catch (err) {
       console.error('Unexpected error:', err);
+      toast.error('Unexpected error occurred while saving the policy.');
     }
   };
 
@@ -91,7 +96,7 @@ export default function PolicyForm({ initialData, onClose }: PolicyFormProps) {
 
   return (
     <div className="min-h-screen">
-      <Card className="max-w-4xl mx-auto">
+      <Card className="mx-auto">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
             {isEditMode ? 'Edit Policy' : 'Add Policy'}

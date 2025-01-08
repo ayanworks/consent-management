@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner'; 
 
 const formSchema = z.object({
   agreement_name: z.string().min(1, { message: 'Agreement name is required.' }),
@@ -83,8 +84,8 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
       const agreementData = {
         agreement_id: initialData?.agreement_id || uuidv4(),
         ...values,
-        is_active: initialData ? initialData.is_active : true, 
-        version: initialData ? (parseFloat(initialData.version) + 0.1).toFixed(1) : '1.0', 
+        is_active: initialData ? initialData.is_active : true,
+        version: initialData ? (parseFloat(initialData.version) + 0.1).toFixed(1) : '1.0',
         created_at: initialData?.created_at || new Date().toISOString(),
         updated_at: initialData ? new Date().toISOString() : null,
       };
@@ -95,12 +96,15 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
 
       if (error) {
         console.error('Error saving agreement:', error.message);
+        toast.error('Failed to save agreement');
       } else {
         form.reset();
         onClose?.();
+        toast.success(initialData ? 'Agreement updated successfully!' : 'Agreement added successfully!');  // Success toast
       }
     } catch (error) {
       console.error('Unexpected error:', error);
+      toast.error('An unexpected error occurred'); 
     }
   };
 
@@ -110,7 +114,7 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
 
   return (
     <div className="min-h-screen">
-      <Card className="max-w-4xl mx-auto">
+      <Card className="mx-auto">
         <CardHeader>
           <CardTitle className="text-left text-2xl font-bold">
             {initialData ? 'Edit Agreement' : 'Add Agreement'}

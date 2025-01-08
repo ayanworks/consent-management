@@ -73,8 +73,8 @@ const AgreementView: React.FC = () => {
     );
 
   return (
-    <div className="max-h-screen dark:bg-[#06040B] p-5 sm:p-10 md:p-20 flex justify-center items-center overflow-y-auto">
-      <div className="max-w-4xl w-full min-h-screen overflow-y-auto">
+    <div className="max-h-screen dark:bg-[#06040B] p-6 flex justify-center items-center overflow-y-auto">
+      <div className="w-full min-h-screen overflow-y-auto">
         <Card className="overflow-y-auto h-full">
           <CardHeader>
             <CardTitle className="text-left text-2xl font-bold text-gray-900 dark:text-gray-200">

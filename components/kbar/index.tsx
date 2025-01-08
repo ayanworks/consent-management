@@ -46,7 +46,7 @@ export default function KBar({ children }: { children: React.ReactNode }) {
             keywords: childItem.title.toLowerCase(),
             section: navItem.title,
             subtitle: `Go to ${childItem.title}`,
-            perform: () => navigateTo(childItem.url)
+            // perform: () => navigateTo(childItem.url)
           })) ?? [];
 
         // Return only valid actions (ignoring null base actions for containers)
