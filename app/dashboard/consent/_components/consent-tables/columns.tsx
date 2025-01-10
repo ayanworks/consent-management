@@ -27,6 +27,20 @@ export const columns: ColumnDef<Policy>[] = [
     accessorKey: 'created_at',
     header: 'CREATED AT',
     // cell: ({ row }) => new Date(row.original.created_at).toLocaleString() 
+    cell: ({ row }) => {
+      const date = new Date(row.original.created_at);
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true,
+      });
+  
+      return formatter.format(date);
+    }
   },
   {
     id: 'actions',

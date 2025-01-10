@@ -21,6 +21,7 @@ interface Policy {
   industrySector: string;
   created_at: string;
   updated_at: string;
+  shareData: boolean;
 }
 
 const PolicyView: React.FC = () => {
@@ -130,6 +131,14 @@ const PolicyView: React.FC = () => {
                 </p>
                 <p className="text-gray-900 dark:text-gray-200">
                   {policy.industrySector}
+                </p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-700 dark:text-gray-400 font-semibold">
+                  Share Data To Third Party Applications:
+                </p>
+                <p className="text-gray-900 dark:text-gray-200">
+                  {policy.shareData  ? "Yes" : "No"}
                 </p>
               </div>
               <div className="flex justify-between items-center">

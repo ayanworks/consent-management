@@ -16,8 +16,10 @@ export default function UpdatePolicy() {
     policy_description: '',
     jurisdiction: '',
     industrySector: '',
+    shareData: false,
+    version: '1.0'
   });
-  
+
   const searchParams = useSearchParams();
   const policy_id = searchParams.get('policy_id');
   const router = useRouter();
@@ -39,6 +41,8 @@ export default function UpdatePolicy() {
         policy_description: data.policy_description,
         jurisdiction: data.jurisdiction,
         industrySector: data.industrySector,
+        shareData: data.shareData || false, 
+        version: data.version || '1.0',
       });
     }
 
@@ -49,10 +53,14 @@ export default function UpdatePolicy() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, shareData: e.target.checked });
+  };
+
   const handleUpdatePolicy = async () => {
     try {
       // Increment version by 0.1 for each update
-      const newVersion = `${parseFloat('1.0') + 0.1}`;
+      const newVersion = `${parseFloat(formData.version) + 0.1}`;
 
       const updatedPolicy = {
         policy_id: uuidv4(), 
@@ -128,6 +136,20 @@ export default function UpdatePolicy() {
                   onChange={handleInputChange}
                   placeholder="Enter industry sector"
                 />
+              </div>
+
+              {/* Add Checkbox for shareData */}
+              <div className="col-span-2">
+                <label className="flex items-center space-x-2">
+                  <input 
+                    type="checkbox" 
+                    name="shareData" 
+                    checked={formData.shareData} 
+                    onChange={handleCheckboxChange}
+                    className="h-4 w-4"
+                  />
+                  <span>Share data with third-party resources</span>
+                </label>
               </div>
             </div>
 

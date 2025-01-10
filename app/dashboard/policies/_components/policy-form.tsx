@@ -26,6 +26,7 @@ const formSchema = z.object({
   version: z.string(),
   jurisdiction: z.string().min(1, { message: 'Jurisdiction is required.' }),
   industrySector: z.string().min(1, { message: 'Industry sector is required.' }),
+  shareData: z.boolean(), 
 });
 
 interface Policy {
@@ -35,6 +36,7 @@ interface Policy {
   version: string;
   jurisdiction: string;
   industrySector: string;
+  shareData: boolean;
   created_at: string;
   updated_at?: string;
 }
@@ -56,6 +58,7 @@ export default function PolicyForm({ initialData, onClose }: PolicyFormProps) {
       version: initialData?.version || '1.0',
       jurisdiction: initialData?.jurisdiction || '',
       industrySector: initialData?.industrySector || '',
+      shareData: initialData?.shareData || false, // Default value for the new checkbox
     },
   });
 
@@ -153,6 +156,22 @@ export default function PolicyForm({ initialData, onClose }: PolicyFormProps) {
                       <FormLabel>Industry Sector</FormLabel>
                       <FormControl>
                         <Input placeholder="Enter industry sector" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Checkbox for sharing data */}
+                <FormField
+                  control={form.control}
+                  name="shareData"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <label className="flex items-center space-x-2">
+                          <input type="checkbox" {...field} className="h-4 w-4" />
+                          <span>Share data with third-party resources</span>
+                        </label>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
