@@ -5,10 +5,10 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 
 export const columns: ColumnDef<Policy>[] = [
-  {
-    accessorKey: 'user_id',
-    header: 'USER ID'
-  },
+  // {
+  //   accessorKey: 'user_id',
+  //   header: 'USER ID'
+  // },
   {
     accessorKey: 'name',
     header: 'USER NAME',

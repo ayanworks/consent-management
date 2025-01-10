@@ -18,13 +18,14 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner'; 
+import { toast } from 'sonner';
 
 const formSchema = z.object({
   agreement_name: z.string().min(1, { message: 'Agreement name is required.' }),
   policy_id: z.string().min(1, { message: 'Policy is required.' }),
   purpose: z.string().min(1, { message: 'Purpose is required.' }),
   purpose_description: z.string().min(1, { message: 'Description is required.' }),
+  agreement_duration: z.string().min(1, { message: 'Agreement duration is required.' }), // Add validation for the new field
   data_attributes: z.array(
     z.object({
       name: z.string().min(1, { message: 'Attribute name is required.' }),
@@ -51,11 +52,12 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      agreement_name: initialData?.agreement_name || '',
-      policy_id: initialData?.policy_id || '',
-      purpose: initialData?.purpose || '',
-      purpose_description: initialData?.purpose_description || '',
-      data_attributes: initialData?.data_attributes || [],
+      agreement_name: initialData?.agreement_name ?? '',
+      policy_id: initialData?.policy_id ?? '',
+      purpose: initialData?.purpose ?? '',
+      purpose_description: initialData?.purpose_description ?? '',
+      agreement_duration: initialData?.agreement_duration ?? '', // Use nullish coalescing to ensure empty string if undefined
+      data_attributes: initialData?.data_attributes ?? [],
     },
   });
 
@@ -104,7 +106,7 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
       }
     } catch (error) {
       console.error('Unexpected error:', error);
-      toast.error('An unexpected error occurred'); 
+      toast.error('An unexpected error occurred');
     }
   };
 
@@ -123,7 +125,7 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Create a two-column grid for Agreement Name, Policy, Purpose, and Purpose Description */}
+              {/* Create a two-column grid for Agreement Name, Policy, Purpose, Purpose Description, and Agreement Duration */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -132,7 +134,11 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
                     <FormItem>
                       <FormLabel>Agreement Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter agreement name" {...field} />
+                        <Input
+                          placeholder="Enter agreement name"
+                          value={field.value ?? ''}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -180,7 +186,11 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
                     <FormItem>
                       <FormLabel>Purpose</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter purpose" {...field} />
+                        <Input
+                          placeholder="Enter purpose"
+                          value={field.value ?? ''}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -196,6 +206,25 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
                         <textarea
                           placeholder="Enter purpose description"
                           className="w-full rounded-md border border-input bg-transparent p-3 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                          value={field.value ?? ''}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Agreement Duration Field */}
+                <FormField
+                  control={form.control}
+                  name="agreement_duration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Agreement Duration</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter agreement duration (e.g., 12 months)"
+                          value={field.value ?? ''} // Ensure the value is never undefined
                           {...field}
                         />
                       </FormControl>

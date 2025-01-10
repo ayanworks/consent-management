@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { supabase } from '@/lib/client';
-import { v4 as uuidv4 } from 'uuid';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -15,230 +14,181 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
+// Validation schema for the consent form
 const formSchema = z.object({
-  agreement_name: z.string().min(1, { message: 'Agreement name is required.' }),
-  policy_id: z.string().min(1, { message: 'Policy is required.' }),
-  purpose: z.string().min(1, { message: 'Purpose is required.' }),
-  purpose_description: z.string().min(1, { message: 'Description is required.' }),
-  data_attributes: z.array(
-    z.object({
-      name: z.string().min(1, { message: 'Attribute name is required.' }),
-      description: z.string().min(1, { message: 'Attribute description is required.' }),
-    })
-  ),
+  user_id: z.string().min(1, { message: 'User ID is required.' }),
+  agreement_id: z.string().min(1, { message: 'Agreement ID is required.' }),
+  consent_status: z.enum(['Opt-in', 'Opt-out'], { message: 'Consent status is required.' }),
 });
 
-interface Policy {
-  policy_id: string;
-  policy_name: string;
-}
-
-interface AgreementFormProps {
-  initialData?: z.infer<typeof formSchema> & { agreement_id?: string; created_at?: string; version?: string };
+interface ConsentFormProps {
+  initialData?: z.infer<typeof formSchema> & { consent_id?: string; created_at?: string; updated_at?: string };
   onClose?: () => void;
 }
 
-export default function ConsentForm({ initialData, onClose }: AgreementFormProps) {
-  const [policies, setPolicies] = useState<Policy[]>([]);
-  const [loadingPolicies, setLoadingPolicies] = useState(true);
+export default function ConsentForm({ initialData, onClose }: ConsentFormProps) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [userOptions, setUserOptions] = useState<any[]>([]);
+  const [agreementOptions, setAgreementOptions] = useState<any[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      agreement_name: initialData?.agreement_name || '',
-      policy_id: initialData?.policy_id || '',
-      purpose: initialData?.purpose || '',
-      purpose_description: initialData?.purpose_description || '',
-      data_attributes: initialData?.data_attributes || [],
+      user_id: initialData?.user_id || '',
+      agreement_id: initialData?.agreement_id || '',
+      consent_status: initialData?.consent_status || 'Opt-in',
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: 'data_attributes',
-  });
-
   useEffect(() => {
-    const fetchPolicies = async () => {
-      setLoadingPolicies(true);
-      const { data, error } = await supabase.from('Policy').select('*');
-      if (error) {
-        console.error('Error fetching policies:', error.message);
-      } else {
-        setPolicies(data || []);
+    const fetchUsersAndAgreements = async () => {
+      try {
+        // Fetch Users
+        const { data: users, error: userError } = await supabase.from('User').select('user_id, name');
+        if (userError) throw new Error(userError.message);
+        setUserOptions(users || []);
+
+        // Fetch Agreements
+        const { data: agreements, error: agreementError } = await supabase.from('Agreement').select('agreement_id, agreement_name');
+        if (agreementError) throw new Error(agreementError.message);
+        setAgreementOptions(agreements || []);
+      } catch (err) {
+        setError('Error fetching users or agreements');
+        console.error(err);
       }
-      setLoadingPolicies(false);
     };
 
-    fetchPolicies();
+    fetchUsersAndAgreements();
   }, []);
 
-  const handleSaveAgreement = async (values: z.infer<typeof formSchema>) => {
+  // Handle form submission
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const agreementData = {
-        agreement_id: initialData?.agreement_id || uuidv4(),
-        ...values,
-        is_active: initialData ? initialData.is_active : true, 
-        version: initialData ? (parseFloat(initialData.version) + 0.1).toFixed(1) : '1.0', 
-        created_at: initialData?.created_at || new Date().toISOString(),
-        updated_at: initialData ? new Date().toISOString() : null,
-      };
+      setLoading(true);
+      setError(null);
+      setSuccess(null);
 
-      const { error } = await supabase.from('Agreement').upsert(agreementData, {
-        onConflict: 'agreement_id',
-      });
+      // Insert new consent record
+      const { error } = await supabase.from('Consent_Record').insert([
+        {
+          user_id: values.user_id,
+          agreement_id: values.agreement_id,
+          consent_status: values.consent_status,
+        },
+      ]);
 
       if (error) {
-        console.error('Error saving agreement:', error.message);
+        throw new Error('Error inserting consent');
       } else {
-        form.reset();
-        onClose?.();
+        setSuccess('Consent added successfully');
       }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-    }
-  };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    handleSaveAgreement(values);
+      // Reset form and close
+      form.reset();
+      onClose?.();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen">
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
-          <CardTitle className="text-left text-2xl font-bold">
-            {initialData ? 'Edit Agreement' : 'Add Agreement'}
-          </CardTitle>
+          <CardTitle className="text-left text-2xl font-bold">Add Consent</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* User ID Field */}
               <FormField
                 control={form.control}
-                name="agreement_name"
+                name="user_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Agreement Name</FormLabel>
+                    <FormLabel>User</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter agreement name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="policy_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Policy</FormLabel>
-                    <FormControl>
-                      <select
-                        {...field}
-                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        <option value="" className="text-gray-500">
-                          Select Policy
-                        </option>
-                        {loadingPolicies ? (
-                          <option disabled className="text-gray-500">
-                            Loading policies...
+                      <select {...field} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm">
+                        <option value="">Select User</option>
+                        {userOptions.map((user) => (
+                          <option key={user.user_id} value={user.user_id}>
+                            {user.name}
                           </option>
-                        ) : (
-                          policies.map((policy) => (
-                            <option
-                              key={policy.policy_id}
-                              value={policy.policy_id}
-                              className="text-gray-900 hover:bg-blue-100"
-                            >
-                              {policy.policy_name}
-                            </option>
-                          ))
-                        )}
+                        ))}
                       </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Agreement ID Field */}
               <FormField
                 control={form.control}
-                name="purpose"
+                name="agreement_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Purpose</FormLabel>
+                    <FormLabel>Agreement</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter purpose" {...field} />
+                      <select {...field} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm">
+                        <option value="">Select Agreement</option>
+                        {agreementOptions.map((agreement) => (
+                          <option key={agreement.agreement_id} value={agreement.agreement_id}>
+                            {agreement.agreement_name}
+                          </option>
+                        ))}
+                      </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Consent Status Field */}
               <FormField
                 control={form.control}
-                name="purpose_description"
+                name="consent_status"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Purpose Description</FormLabel>
+                    <FormLabel>Consent Status</FormLabel>
                     <FormControl>
-                      <textarea
-                        placeholder="Enter purpose description"
-                        className="w-full rounded-md border border-input bg-transparent p-3 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                        {...field}
-                      />
+                      <select {...field} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm">
+                        <option value="Opt-in">Opt-in</option>
+                        <option value="Opt-out">Opt-out</option>
+                      </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormItem>
-                <FormLabel>Data Attributes</FormLabel>
-                <div className="space-y-4">
-                  {fields.map((item, index) => (
-                    <div key={item.id} className="flex space-x-4">
-                      <Input
-                        placeholder="Attribute Name"
-                        {...form.register(`data_attributes.${index}.name`)}
-                        className="w-full"
-                      />
-                      <Input
-                        placeholder="Attribute Description"
-                        {...form.register(`data_attributes.${index}.description`)}
-                        className="w-full"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={() => remove(index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                <Button type="button" onClick={() => append({ name: '', description: '' })} className="mt-2">
-                  Add Data Attribute
-                </Button>
-              </FormItem>
+
+              {/* Action Buttons */}
               <div className="flex justify-end">
-                <Button type="submit">
-                  {initialData ? 'Update Agreement' : 'Add Agreement'}
+                <Button type="submit" disabled={loading}>
+                  {loading ? 'Saving...' : 'Add Consent'}
                 </Button>
                 <Button
                   type="button"
                   variant="secondary"
                   onClick={onClose}
                   className="ml-2"
+                  disabled={loading}
                 >
                   Cancel
                 </Button>
               </div>
             </form>
           </Form>
+
+          {/* Display success or error messages */}
+          {success && <div className="text-green-500 mt-4">{success}</div>}
+          {error && <div className="text-red-500 mt-4">{error}</div>}
         </CardContent>
       </Card>
     </div>

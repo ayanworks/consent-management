@@ -5,13 +5,13 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 
 export const columns: ColumnDef<Policy & { email?: string }>[] = [
+  // {
+  //   accessorKey: 'log_id',
+  //   header: 'LOG ID',
+  // },
   {
-    accessorKey: 'log_id',
-    header: 'LOG ID',
-  },
-  {
-    accessorKey: 'entity_id',
-    header: 'ENTITY ID',
+    accessorKey: 'agreement_name',
+    header: 'AGREEMENT NAME',
     // cell: ({ row }) => row.original.User?.name || 'Unknown'
   },
   {
@@ -30,9 +30,27 @@ export const columns: ColumnDef<Policy & { email?: string }>[] = [
     // cell: ({ row }) => new Date(row.original.created_at).toLocaleString()
   },
   {
+    accessorKey: 'consent_status',
+    header: 'CONSENT STATUS'
+  },
+  {
     accessorKey: 'updated_at',
     header: 'UPDATED AT',
     // cell: ({ row }) => new Date(row.original.updated_at).toLocaleString()
+    cell: ({ row }) => {
+      const date = new Date(row.original.created_at);
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true,
+      });
+  
+      return formatter.format(date);
+    },
   },
   // {
   //   id: 'actions',

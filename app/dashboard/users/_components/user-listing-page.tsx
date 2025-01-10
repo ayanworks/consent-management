@@ -103,7 +103,7 @@ export default async function UsersListingPage({}: TPoliciesListingPage) {
           />
 
           {/* <Link
-            href={'/dashboard/agreement/new'}
+            href={'/dashboard/users/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New
