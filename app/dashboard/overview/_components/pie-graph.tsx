@@ -59,10 +59,15 @@ export function ConsentPieGraph() {
       }
 
       setAgreements(data || []);
+
+      // Set default selected agreement to the first one if available
+      if (data && data.length > 0 && !selectedAgreement) {
+        setSelectedAgreement(data[0].agreement_id);
+      }
     };
 
     fetchAgreements();
-  }, []);
+  }, []); 
 
   // Fetch consent data for the selected agreement
   React.useEffect(() => {
