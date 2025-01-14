@@ -43,6 +43,28 @@ export const columns: ColumnDef<Policy>[] = [
     }
   },
   {
+    accessorKey: 'updated_at',
+    header: 'UPDATED AT',
+    // cell: ({ row }) => new Date(row.original.created_at).toLocaleString() 
+    cell: ({ row }) => {
+      if(row.original.updated_at) {
+        const date = new Date(row.original.updated_at);
+        const formatter = new Intl.DateTimeFormat('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: true,
+        });
+    
+        return formatter.format(date);
+      }
+      return null
+    }
+  },
+  {
     id: 'actions',
     // cell: ({ row }) => <CellAction data={row.original} />
   }
