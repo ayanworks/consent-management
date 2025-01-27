@@ -10,7 +10,13 @@ export const columns: ColumnDef<Policy>[] = [
   },
   {
     accessorKey: 'purpose',
-    header: 'PURPOSE'
+    header: 'PURPOSE',
+      cell: ({ row }) => {
+      const purpose = row.original.purpose;
+      const words = purpose.split(' ');
+      const displayText = words.slice(0, 6).join(' ') + (words.length > 6 ? '...' : '');
+      return <span>{displayText}</span>;
+    }
   },
   // {
   //   accessorKey: 'purpose_description',

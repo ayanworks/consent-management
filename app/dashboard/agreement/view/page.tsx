@@ -116,7 +116,7 @@ const AgreementView: React.FC = () => {
                     {agreement.purpose}
                   </p>
                 </div>
-                <div className="flex justify-between items-start gap-20">
+                <div className="flex justify-between items-start lg:gap-x-60 sm-gap-x-20 md:gap-x-30">
                   <p className="text-gray-700 dark:text-gray-400 font-semibold">
                     Purpose Description:
                   </p>
