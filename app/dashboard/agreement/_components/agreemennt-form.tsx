@@ -37,6 +37,7 @@ const formSchema = z.object({
 interface Policy {
   policy_id: string;
   policy_name: string;
+  version: string;
 }
 
 interface AgreementFormProps {
@@ -169,7 +170,7 @@ export default function AgreementForm({ initialData, onClose }: AgreementFormPro
                                 value={policy.policy_id}
                                 className="text-gray-900 hover:bg-blue-100"
                               >
-                                {policy.policy_name}
+                                {policy.policy_name} (Version: {policy.version}) {/* Display version */}
                               </option>
                             ))
                           )}

@@ -63,29 +63,33 @@ export default async function ConsentListingPage({}: TPoliciesListingPage) {
     try {
       let query = supabase
         .from('Consent_Record')
-        .select('*, User(name), Agreement(agreement_name)', { count: 'exact' }); 
+        .select('*, User(name), Agreement(agreement_name)', { count: 'exact' });
   
       const offset = (page - 1) * pageLimit;
       query = query.range(offset, offset + pageLimit - 1);
   
+      // If search is provided, filter by agreement_name
       if (search) {
-        query = query.ilike('consent_id', `%${search}%`);
+        query = query.ilike('Agreement.agreement_name', `%${search}%`);
       }
   
       const { data, count, error } = await query;
-      console.log("🚀 ~ ConsentListingPage ~ data:", data)
+      console.log("🚀 ~ ConsentListingPage ~ data:", data);
   
       if (error) {
         console.error('Error fetching data:', error.message);
         return { data: [], totalCount: 0 };
       }
   
-      return { data, totalCount: count };
+      // Filter out records where agreement_name is missing
+      const filteredData = data.filter(item => item.Agreement?.agreement_name);
+  
+      return { data: filteredData, totalCount: count };
     } catch (error) {
       console.error('Unexpected error:', error);
       return { data: [], totalCount: 0 };
     }
-  };
+  };  
   
 
   
